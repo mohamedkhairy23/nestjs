@@ -4,13 +4,16 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
-  Req,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { ProductsService } from './products.service';
 import { Product } from 'src/interfaces/products';
+import { CreateProductDto } from './dto/create-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -23,25 +26,28 @@ export class ProductsController {
 
   // ** /products/1
   @Get(':id')
-  getProductById(@Param('id') id: string) {
-    return this.productsService.getSingleProduct(+id);
+  getProductById(@Param('id', ParseIntPipe) id: number) {
+    console.log(typeof id);
+    return this.productsService.getSingleProduct(id);
   }
 
   @Post() // ** /products
-  addProduct(@Req() req: Request): Product {
-    return this.productsService.createNewProduct(req.body);
+  @UsePipes(ValidationPipe)
+  addProduct(@Body() createProductDto: CreateProductDto): Product {
+    return this.productsService.createNewProduct(createProductDto);
   }
 
   @Delete(':id')
-  removeProduct(@Param('id') id: string) {
-    return this.productsService.removeProduct(+id);
+  removeProduct(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.removeProduct(id);
   }
 
   @Put(':id') // ** /products/:id
+  @UsePipes(ValidationPipe)
   updateProduct(
-    @Param('id') id: string,
-    @Body() body: Product,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProductDto: UpdateProductDto,
   ): Product | string {
-    return this.productsService.updateProduct(+id, body);
+    return this.productsService.updateProduct(id, updateProductDto);
   }
 }

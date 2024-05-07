@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from 'src/interfaces/products';
+import { CreateProductDto } from './dto/create-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
-// serice for storing and retrieving data
+// providers used for organizing code and managing dependencies
+// providers in nestjs are responsible for creating and managing instances of classes that can be injected into other classes using dependency injection.
+// services for storing and retrieving data
+
 @Injectable()
 export class ProductsService {
   private products: Product[] = [
@@ -15,7 +20,7 @@ export class ProductsService {
   }
 
   getSingleProduct(id: number): Product | string {
-    const foundedProduct = this.products.find((product) => product.id === +id);
+    const foundedProduct = this.products.find((product) => product.id === id);
 
     if (foundedProduct) {
       return foundedProduct;
@@ -24,7 +29,7 @@ export class ProductsService {
     return 'Product not found';
   }
 
-  createNewProduct(product: Product) {
+  createNewProduct(product: CreateProductDto) {
     this.products.push({
       id: this.products.length + 1,
       ...product,
@@ -33,11 +38,11 @@ export class ProductsService {
   }
 
   removeProduct(id: number) {
-    return this.products.filter((product) => product.id !== +id);
+    return this.products.filter((product) => product.id !== id);
   }
 
-  updateProduct(id: number, product: Product) {
-    const index = this.products.findIndex((product) => product.id === +id);
+  updateProduct(id: number, product: UpdateProductDto) {
+    const index = this.products.findIndex((product) => product.id === id);
 
     if (index !== -1) {
       const updatedProduct = product;
