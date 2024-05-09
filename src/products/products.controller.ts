@@ -27,7 +27,6 @@ export class ProductsController {
   // ** /products/1
   @Get(':id')
   getProductById(@Param('id', ParseIntPipe) id: number) {
-    console.log(typeof id);
     return this.productsService.getSingleProduct(id);
   }
 
